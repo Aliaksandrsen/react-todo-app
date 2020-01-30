@@ -15,7 +15,6 @@ export default class TodoListItem extends Component {
         done: !state.done,
       };
     });
-
   };
 
   onMarkImportant = () => {
