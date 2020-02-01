@@ -4,14 +4,12 @@ import AppHeader from '../app-header';
 import SearchPanel from '../search-panel';
 import TodoList from '../todo-list';
 import ItemStatusFilter from '../item-status-filter';
-
 import ItemAddForm from '../item-add-form';
 
 import './app.css';
 
-
 export default class App extends Component {
-  // id for item in array
+
   maxId = 100;
 
   state = {
@@ -25,39 +23,13 @@ export default class App extends Component {
 
   createTodoItem(label) {
     return {
-      label,
-      important: false,
-      done: false,
-      id: this.maxId++,
+      label: `${label}`, important: false, id: this.maxId++, done: false,
     };
   }
 
   deleteItem = (id) => {
     this.setState(({ todoData }) => {
-
-      const idx = todoData.findIndex((el) => el.id === id);
-
-      // ! we can not mutate state!!!
-      const newTodoData = [...todoData];
-      newTodoData.splice(idx, 1);
-
-      //? other way
-      // const newArray = [
-      //   ...todoData.slice(0, idx),
-      //   ...todoData.slice(idx + 1),
-      // ]
-
-      return {
-        todoData: newTodoData,
-      }
-    });
-  };
-
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
-    //! id must be unique
-    this.setState(({ todoData }) => {
-      const newTodoData = [...todoData, newItem];
+      const newTodoData = [...todoData].filter((item) => item.id !== id);
 
       return {
         todoData: newTodoData,
@@ -65,94 +37,91 @@ export default class App extends Component {
     });
   };
 
-  onToggleDone = (id) => {
+  addItem = (text) => {
+    // without empty items
+    if (text === '') return;
     this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
+      const newItem = this.createTodoItem(`${text}`);
+      const newTodoData = [...todoData, newItem];
+      return {
+        todoData: newTodoData,
+      };
+    });
+  };
 
-      // 1. update object
-      const oldItem = todoData[idx];
-      const newItem = { ...oldItem, done: !oldItem.done };
-
-      // 2. construct new Array
-      // ! we can not mutate state!!!
+  onToggleImportant = (id) => {
+    this.setState(({ todoData }) => {
       const newTodoData = [...todoData];
-      newTodoData.splice(idx, 1, newItem);
-
-      //? other way
-      // const newTodoData = [
-      //   ...todoData.slice(0, idx),
-      //   newItem,
-      //   ...todoData.slice(idx + 1),
-      // ]
-
+      newTodoData.map((item) => {
+        if (item.id === id) {
+          item.important = !item.important;
+          return item;
+        }
+        return item;
+      })
       return {
         todoData: newTodoData,
       }
     })
-  }
+  };
 
-  onToggleImportant = (id) => {
+  onToggleDone = (id) => {
     this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-
-      // 1. update object
-      const oldItem = todoData[idx];
-      const newItem = { ...oldItem, important: !oldItem.important };
-
-      // 2. construct new Array
-      const newArray = [
-        ...todoData.slice(0, idx),
-        newItem,
-        ...todoData.slice(idx + 1),
-      ]
+      const newTodoData = [...todoData];
+      newTodoData.map((item) => {
+        if (item.id === id) {
+          item.done = !item.done;
+          return item;
+        }
+        return item;
+      })
       return {
-        todoData: newArray,
+        todoData: newTodoData,
       }
     })
-  }
-  onSearchChange = (term) => {
-    this.setState({term});
-  }
+  };
 
-  search = (items, term) => {
-    if (items.lenght === 0) return items;
-    return items.filter((item) => {
-      return (item.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
+  onSearchChange = (text) => {
+    this.setState({
+      term: text,
     });
   }
 
-  render() {
+  search(items, term) {
+    const newItems = items.filter((item) => {
+      if (item.label.toLowerCase().indexOf(term.toLowerCase()) !== -1) return true;
+      return null;
+    });
 
+    return newItems;
+  }
+
+  render() {
     const { todoData, term } = this.state;
 
-    const visibleItems = this.search(todoData, term);
+    const newTodoData = this.search(todoData, term);
 
-    const doneCount = todoData.reduce((acc, item) => {
-      if (item.done) return acc + 1;
+    const done = todoData.reduce((acc, item) => {
+      if (item.done) acc++;
       return acc;
     }, 0);
 
-    const todoCount = todoData.length - doneCount;
+    const toDo = todoData.length - done;
 
     return (
       <div className="todo-app" >
-        <AppHeader toDo={todoCount} done={doneCount} />
+        <AppHeader toDo={toDo} done={done} />
         <div className="top-panel d-flex">
-          <SearchPanel
-            onSearchChange={this.onSearchChange}
-          />
+          <SearchPanel onSearchChange={this.onSearchChange} />
           <ItemStatusFilter />
         </div>
-
-        <TodoList
-          todos={visibleItems}
+        <TodoList todos={newTodoData}
           onDeleted={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}
         />
         <ItemAddForm
-          onItemAdded={this.addItem}
-        />
+          onAddItem={this.addItem} />
       </div>
     );
   };
