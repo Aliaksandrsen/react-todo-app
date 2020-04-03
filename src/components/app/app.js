@@ -111,7 +111,6 @@ export default class App extends Component {
         if (!item.done) return true;
         return false;
       });
-      console.log(newItems)
       return newItems;
     }
 
