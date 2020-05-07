@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import AppHeader from '../app-header';
 import SearchPanel from '../search-panel';
@@ -8,50 +8,48 @@ import ItemAddForm from '../item-add-form';
 
 import './app.css';
 
-export default class App extends Component {
 
-  maxId = 100;
 
-  state = {
-    todoData: [
-      this.createTodoItem('Drink Coffee'),
-      this.createTodoItem('Make Awesome App'),
-      this.createTodoItem('Have a lunch'),
-    ],
-    term: '',
-    filter: 'all', // active, all, done
-  }
 
-  createTodoItem(label) {
+const App = () => {
+
+  let maxId = 100;
+
+  const createTodoItem = useCallback((label) => {
     return {
-      label: `${label}`, important: false, id: this.maxId++, done: false,
+      label: `${label}`, important: false, id: maxId++, done: false,
     };
-  }
+  }, [maxId]);
 
-  deleteItem = (id) => {
-    this.setState(({ todoData }) => {
+  const [todoData, setTodoData] = useState([
+    createTodoItem('Drink Coffee'),
+    createTodoItem('Make Awesome App'),
+    createTodoItem('Have a lunch'),
+  ]);
+  const [term, setTerm] = useState('');
+  const [filter, setFilter] = useState('all'); // active, all, done
+
+
+  const deleteItem = (id) => {
+    setTodoData((todoData) => {
       const newTodoData = [...todoData].filter((item) => item.id !== id);
 
-      return {
-        todoData: newTodoData,
-      };
+      return newTodoData;
     });
   };
 
-  addItem = (text) => {
-    // without empty items
-    if (text === '') return;
-    this.setState(({ todoData }) => {
-      const newItem = this.createTodoItem(`${text}`);
+  const addItem = (text) => {
+    if (text === '') return; // without empty items
+
+    setTodoData((todoData) => {
+      const newItem = createTodoItem(`${text}`);
       const newTodoData = [...todoData, newItem];
-      return {
-        todoData: newTodoData,
-      };
+      return newTodoData;
     });
   };
 
-  onToggleImportant = (id) => {
-    this.setState(({ todoData }) => {
+  const onToggleImportant = (id) => {
+    setTodoData((todoData) => {
       const newTodoData = [...todoData];
       newTodoData.map((item) => {
         if (item.id === id) {
@@ -60,14 +58,12 @@ export default class App extends Component {
         }
         return item;
       })
-      return {
-        todoData: newTodoData,
-      }
+      return newTodoData;
     })
   };
 
-  onToggleDone = (id) => {
-    this.setState(({ todoData }) => {
+  const onToggleDone = (id) => {
+    setTodoData((todoData) => {
       const newTodoData = [...todoData];
       newTodoData.map((item) => {
         if (item.id === id) {
@@ -76,25 +72,19 @@ export default class App extends Component {
         }
         return item;
       })
-      return {
-        todoData: newTodoData,
-      }
+      return newTodoData;
     })
   };
 
-  onSearchChange = (text) => {
-    this.setState({
-      term: text,
-    });
+  const onSearchChange = (text) => {
+    setTerm(text);
   }
 
-  onFillterChange = (filter) => {
-    this.setState({
-      filter: filter,
-    });
+  const onFillterChange = (filter) => {
+    setFilter(filter);
   }
 
-  search(items, term) {
+  const search = (items, term) => {
     const newItems = items.filter((item) => {
       if (item.label.toLowerCase().indexOf(term.toLowerCase()) !== -1) return true;
       return null;
@@ -103,7 +93,7 @@ export default class App extends Component {
     return newItems;
   }
 
-  filter(items, filter) {
+  const filterFunc = (items, filter) => {
     let newItems;
 
     if (filter === 'active') {
@@ -125,37 +115,37 @@ export default class App extends Component {
     return items;
   }
 
-  render() {
-    const { todoData, term, filter } = this.state;
-    let newTodoData = this.search(todoData, term);
 
-    newTodoData = this.filter(newTodoData, filter);
+  let newTodoData = search(todoData, term);
 
-    const done = todoData.reduce((acc, item) => {
-      if (item.done) acc++;
-      return acc;
-    }, 0);
+  newTodoData = filterFunc(newTodoData, filter);
 
-    const toDo = todoData.length - done;
+  const done = todoData.reduce((acc, item) => {
+    if (item.done) acc++;
+    return acc;
+  }, 0);
 
-    return (
-      <div className="todo-app" >
-        <AppHeader toDo={toDo} done={done} />
-        <div className="top-panel d-flex">
-          <SearchPanel onSearchChange={this.onSearchChange} />
-          <ItemStatusFilter
-            onFillterChange={this.onFillterChange}
-            filter={filter}
-          />
-        </div>
-        <TodoList todos={newTodoData}
-          onDeleted={this.deleteItem}
-          onToggleImportant={this.onToggleImportant}
-          onToggleDone={this.onToggleDone}
+  const toDo = todoData.length - done;
+
+  return (
+    <div className="todo-app" >
+      <AppHeader toDo={toDo} done={done} />
+      <div className="top-panel d-flex">
+        <SearchPanel onSearchChange={onSearchChange} />
+        <ItemStatusFilter
+          onFillterChange={onFillterChange}
+          filter={filter}
         />
-        <ItemAddForm
-          onAddItem={this.addItem} />
       </div>
-    );
-  };
+      <TodoList todos={newTodoData}
+        onDeleted={deleteItem}
+        onToggleImportant={onToggleImportant}
+        onToggleDone={onToggleDone}
+      />
+      <ItemAddForm
+        onAddItem={addItem} />
+    </div>
+  );
 }
+
+export default App;
