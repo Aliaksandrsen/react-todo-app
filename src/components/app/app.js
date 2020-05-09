@@ -8,23 +8,26 @@ import ItemAddForm from '../item-add-form';
 
 import './app.css';
 
-
-
+let maxId = 100;
 
 const App = () => {
-
-  let maxId = 100;
-
   const createTodoItem = useCallback((label) => {
     return {
       label: `${label}`, important: false, id: maxId++, done: false,
     };
-  }, [maxId]);
+  }, []);
 
   const [todoData, setTodoData] = useState([
-    createTodoItem('Drink Coffee'),
-    createTodoItem('Make Awesome App'),
-    createTodoItem('Have a lunch'),
+    useMemo(() => createTodoItem('Drink Coffee'), [createTodoItem]),
+    useMemo(() => createTodoItem('Make Awesome App'), [createTodoItem]),
+
+    // in this case too much rerenders must useMemo
+    // createTodoItem('Drink Coffee'), 
+    // createTodoItem('Make Awesome App'),
+
+    // in this case no rerenders (it is not bad variant)
+    // { label: 'Drink Coffee', important: false, id: 1, done: false, },
+    // { label: 'Make Awesome App', important: true, id: 2, done: false, },
   ]);
   const [term, setTerm] = useState('');
   const [filter, setFilter] = useState('all'); // active, all, done
