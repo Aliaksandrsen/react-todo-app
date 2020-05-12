@@ -1,5 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 
+import { deleteItem, addItem, onToggleImportant, onToggleDone } from '../../store/actions';
 import AppHeader from '../app-header';
 import SearchPanel from '../search-panel';
 import TodoList from '../todo-list';
@@ -10,74 +12,10 @@ import './app.css';
 
 let maxId = 100;
 
-const App = () => {
-  const createTodoItem = useCallback((label) => {
-    return {
-      label: `${label}`, important: false, id: maxId++, done: false,
-    };
-  }, []);
+const App = ({ todoData, deleteItem, addItem, onToggleImportant, onToggleDone }) => {
 
-  const [todoData, setTodoData] = useState([
-    useMemo(() => createTodoItem('Drink Coffee'), [createTodoItem]),
-    useMemo(() => createTodoItem('Make Awesome App'), [createTodoItem]),
-
-    // in this case too much rerenders must useMemo
-    // createTodoItem('Drink Coffee'), 
-    // createTodoItem('Make Awesome App'),
-
-    // in this case no rerenders (it is not bad variant)
-    // { label: 'Drink Coffee', important: false, id: 1, done: false, },
-    // { label: 'Make Awesome App', important: true, id: 2, done: false, },
-  ]);
   const [term, setTerm] = useState('');
   const [filter, setFilter] = useState('all'); // active, all, done
-
-
-  const deleteItem = (id) => {
-    setTodoData((todoData) => {
-      const newTodoData = [...todoData].filter((item) => item.id !== id);
-
-      return newTodoData;
-    });
-  };
-
-  const addItem = (text) => {
-    if (text === '') return; // without empty items
-
-    setTodoData((todoData) => {
-      const newItem = createTodoItem(`${text}`);
-      const newTodoData = [...todoData, newItem];
-      return newTodoData;
-    });
-  };
-
-  const onToggleImportant = (id) => {
-    setTodoData((todoData) => {
-      const newTodoData = [...todoData];
-      newTodoData.map((item) => {
-        if (item.id === id) {
-          item.important = !item.important;
-          return item;
-        }
-        return item;
-      })
-      return newTodoData;
-    })
-  };
-
-  const onToggleDone = (id) => {
-    setTodoData((todoData) => {
-      const newTodoData = [...todoData];
-      newTodoData.map((item) => {
-        if (item.id === id) {
-          item.done = !item.done;
-          return item;
-        }
-        return item;
-      })
-      return newTodoData;
-    })
-  };
 
   const onSearchChange = (text) => {
     setTerm(text);
@@ -118,16 +56,13 @@ const App = () => {
     return items;
   }
 
-
   let newTodoData = search(todoData, term);
-
   newTodoData = filterFunc(newTodoData, filter);
 
   const done = todoData.reduce((acc, item) => {
     if (item.done) acc++;
     return acc;
   }, 0);
-
   const toDo = todoData.length - done;
 
   return (
@@ -146,9 +81,27 @@ const App = () => {
         onToggleDone={onToggleDone}
       />
       <ItemAddForm
-        onAddItem={addItem} />
+        onAddItem={(text) => addItem(text, maxId++)} />
     </div>
   );
 }
 
-export default App;
+
+const mapStateToProps = (state) => {
+  return {
+    todoData: state.todoData,
+  }
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteItem: (id) => dispatch(deleteItem(id)),
+    addItem: (text, maxId) => dispatch(addItem(text, maxId)),
+    onToggleImportant: (id) => dispatch(onToggleImportant(id)),
+    onToggleDone: (id) => dispatch(onToggleDone(id)),
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
