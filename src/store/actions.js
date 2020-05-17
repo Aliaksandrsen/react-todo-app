@@ -27,9 +27,17 @@ const onToggleDone = (id) => {
   };
 }
 
+const onFilterChange = (filterName) => {
+  return {
+    type: 'ACTION_ON_FILTER_CHANGE',
+    payload: filterName,
+  };
+}
+
 export {
   deleteItem,
   addItem,
   onToggleImportant,
   onToggleDone,
+  onFilterChange,
 };

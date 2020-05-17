@@ -3,6 +3,7 @@ const initialState = {
     { label: 'Drink Coffee', important: false, id: 1, done: false, },
     { label: 'Make Awesome App', important: true, id: 2, done: false, },
   ],
+  filter: 'all',
 };
 
 
@@ -24,7 +25,7 @@ const rootReduser = (state = initialState, action) => {
 
     case 'ACTION_ON_TOGGLE_IMPORTANT':
       const todoDataWithToggleImportant = [...state.todoData];
-      
+
       todoDataWithToggleImportant.map((item) => {
         if (item.id === action.payload) {
           item.important = !item.important;
@@ -45,6 +46,9 @@ const rootReduser = (state = initialState, action) => {
         return item;
       })
       return { ...state, todoData: todoDataWithToggleDone };
+
+    case 'ACTION_ON_FILTER_CHANGE':
+      return { ...state, filter: action.payload };
 
     default:
       return state;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
-import { deleteItem, addItem, onToggleImportant, onToggleDone } from '../../store/actions';
 import AppHeader from '../app-header';
 import SearchPanel from '../search-panel';
 import TodoList from '../todo-list';
@@ -10,20 +9,14 @@ import ItemAddForm from '../item-add-form';
 
 import './app.css';
 
-let maxId = 100;
 
-const App = ({ todoData, deleteItem, addItem, onToggleImportant, onToggleDone }) => {
+const App = ({ todoData, filter }) => {
 
   const [term, setTerm] = useState('');
-  const [filter, setFilter] = useState('all'); // active, all, done
 
   const onSearchChange = (text) => {
     setTerm(text);
-  }
-
-  const onFillterChange = (filter) => {
-    setFilter(filter);
-  }
+  };
 
   const search = (items, term) => {
     const newItems = items.filter((item) => {
@@ -70,38 +63,19 @@ const App = ({ todoData, deleteItem, addItem, onToggleImportant, onToggleDone })
       <AppHeader toDo={toDo} done={done} />
       <div className="top-panel d-flex">
         <SearchPanel onSearchChange={onSearchChange} />
-        <ItemStatusFilter
-          onFillterChange={onFillterChange}
-          filter={filter}
-        />
+        <ItemStatusFilter/>
       </div>
-      <TodoList todos={newTodoData}
-        onDeleted={deleteItem}
-        onToggleImportant={onToggleImportant}
-        onToggleDone={onToggleDone}
-      />
-      <ItemAddForm
-        onAddItem={(text) => addItem(text, maxId++)} />
+      <TodoList todos={newTodoData}/>
+      <ItemAddForm />
     </div>
   );
 }
 
-
 const mapStateToProps = (state) => {
   return {
     todoData: state.todoData,
+    filter: state.filter,
   }
 };
 
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    deleteItem: (id) => dispatch(deleteItem(id)),
-    addItem: (text, maxId) => dispatch(addItem(text, maxId)),
-    onToggleImportant: (id) => dispatch(onToggleImportant(id)),
-    onToggleDone: (id) => dispatch(onToggleDone(id)),
-  }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
-
+export default connect(mapStateToProps)(App);

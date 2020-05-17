@@ -1,14 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { onFilterChange } from '../../store/actions';
 
 import './item-status-filter.css';
 
-const ItemStatusFilter = ({ filter, onFillterChange }) => {
+const ItemStatusFilter = ({ filter, onFilterChange }) => {
 
   const buttonsLabels = [
     { name: 'all', label: 'All' },
     { name: 'active', label: 'Active' },
     { name: 'done', label: 'Done' },
-  ]
+  ];
 
   const buttons = buttonsLabels.map((item) => {
     const isActive = (filter === item.name);
@@ -19,7 +22,7 @@ const ItemStatusFilter = ({ filter, onFillterChange }) => {
         key={item.name}
         type="button"
         className={`btn ${clazz}`}
-        onClick={() => onFillterChange(item.name)}>
+        onClick={() => onFilterChange(item.name)}>
         {item.label}
       </button>
     )
@@ -33,4 +36,16 @@ const ItemStatusFilter = ({ filter, onFillterChange }) => {
 
 }
 
-export default ItemStatusFilter;
+const mapStateToProps = (state) => {
+  return {
+    filter: state.filter,
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onFilterChange: (filterName) => dispatch(onFilterChange(filterName)),
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemStatusFilter);

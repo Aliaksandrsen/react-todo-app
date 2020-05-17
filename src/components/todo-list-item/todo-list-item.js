@@ -4,7 +4,7 @@ import './todo-list-item.css';
 
 const TodoListItem = ({
   label,
-  onDeleted,
+  deleteItem,
   onToggleImportant,
   onToggleDone,
   done,
@@ -36,7 +36,7 @@ const TodoListItem = ({
 
       <button type="button"
         className="btn btn-outline-danger btn-sm float-right"
-        onClick={onDeleted}>
+        onClick={deleteItem}>
         <i className="fa fa-trash-o" />
       </button>
     </span >
