@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import AppHeader from '../app-header';
@@ -10,13 +10,7 @@ import ItemAddForm from '../item-add-form';
 import './app.css';
 
 
-const App = ({ todoData, filter }) => {
-
-  const [term, setTerm] = useState('');
-
-  const onSearchChange = (text) => {
-    setTerm(text);
-  };
+const App = ({ todoData, filter, searchText }) => {
 
   const search = (items, term) => {
     const newItems = items.filter((item) => {
@@ -49,20 +43,14 @@ const App = ({ todoData, filter }) => {
     return items;
   }
 
-  let newTodoData = search(todoData, term);
+  let newTodoData = search(todoData, searchText);
   newTodoData = filterFunc(newTodoData, filter);
-
-  const done = todoData.reduce((acc, item) => {
-    if (item.done) acc++;
-    return acc;
-  }, 0);
-  const toDo = todoData.length - done;
 
   return (
     <div className="todo-app" >
-      <AppHeader toDo={toDo} done={done} />
+      <AppHeader todoData={todoData} />
       <div className="top-panel d-flex">
-        <SearchPanel onSearchChange={onSearchChange} />
+        <SearchPanel/>
         <ItemStatusFilter/>
       </div>
       <TodoList todos={newTodoData}/>
@@ -75,6 +63,7 @@ const mapStateToProps = (state) => {
   return {
     todoData: state.todoData,
     filter: state.filter,
+    searchText: state.searchText,
   }
 };
 

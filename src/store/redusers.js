@@ -4,6 +4,7 @@ const initialState = {
     { label: 'Make Awesome App', important: true, id: 2, done: false, },
   ],
   filter: 'all',
+  searchText: '',
 };
 
 
@@ -49,6 +50,9 @@ const rootReduser = (state = initialState, action) => {
 
     case 'ACTION_ON_FILTER_CHANGE':
       return { ...state, filter: action.payload };
+
+    case 'ACTION_ON_SEARCH_CHANGE':
+      return { ...state, searchText: action.payload };
 
     default:
       return state;

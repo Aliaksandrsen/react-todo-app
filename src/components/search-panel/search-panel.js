@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
+import { onSearchChange } from '../../store/actions';
 
 import './search-panel.css';
 
@@ -21,4 +24,10 @@ const SearchPanel = ({ onSearchChange }) => {
   );
 };
 
-export default SearchPanel;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSearchChange: (term) => dispatch(onSearchChange(term)),
+  }
+};
+
+export default connect(null, mapDispatchToProps)(SearchPanel);
