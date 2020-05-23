@@ -5,8 +5,8 @@ import { onFilterChange } from '../../store/actions';
 
 import './item-status-filter.css';
 
-const ItemStatusFilter = ({ filter, onFilterChange }) => {
 
+const ItemStatusFilter = ({ filter, onFilterChange }) => {
   const buttonsLabels = [
     { name: 'all', label: 'All' },
     { name: 'active', label: 'Active' },

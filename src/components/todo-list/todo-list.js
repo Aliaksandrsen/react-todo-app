@@ -5,9 +5,41 @@ import { deleteItem, onToggleImportant, onToggleDone } from '../../store/actions
 import TodoListItem from '../todo-list-item';
 import './todo-list.css';
 
-const TodoList = ({ todos, deleteItem, onToggleImportant, onToggleDone }) => {
 
-  const elements = todos.map((item) => {
+const TodoList = ({ todoData, filter, searchText, deleteItem, onToggleImportant, onToggleDone }) => {
+  const searchFunc = (items, term) => {
+    const newItems = items.filter((item) => {
+      if (item.label.toLowerCase().indexOf(term.toLowerCase()) !== -1) return true;
+      return null;
+    });
+    return newItems;
+  }
+
+  const filterFunc = (items, filter) => {
+    let newItems;
+
+    if (filter === 'active') {
+      newItems = items.filter((item) => {
+        if (!item.done) return true;
+        return false;
+      });
+      return newItems;
+    }
+
+    if (filter === 'done') {
+      newItems = items.filter((item) => {
+        if (item.done) return true;
+        return false;
+      });
+      return newItems;
+    }
+    return items;
+  }
+
+  let newTodoData = searchFunc(todoData, searchText);
+  newTodoData = filterFunc(newTodoData, filter);
+
+  const elements = newTodoData.map((item) => {
     const { id, ...itemProps } = item;
 
     return (
@@ -28,6 +60,13 @@ const TodoList = ({ todos, deleteItem, onToggleImportant, onToggleDone }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    todoData: state.todoData,
+    filter: state.filter,
+    searchText: state.searchText,
+  }
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -37,5 +76,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(null, mapDispatchToProps)(TodoList);
-
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);

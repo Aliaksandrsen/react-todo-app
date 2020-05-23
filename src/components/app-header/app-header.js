@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import './app-header.css';
 
-const AppHeader = ({todoData}) => {
 
+const AppHeader = ({todoData}) => {
   const done = todoData.reduce((acc, item) => {
     if (item.done) acc++;
     return acc;
@@ -18,4 +20,11 @@ const AppHeader = ({todoData}) => {
   );
 };
 
-export default AppHeader;
+const mapStateToProps = (state) => {
+  return {
+    todoData: state.todoData,
+  }
+};
+
+export default connect(mapStateToProps)(AppHeader);
+
