@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { onFilterChange } from '../../store/actions';
 
-import './item-status-filter.css';
+import './ItemStatusFilter.css';
 
 
 const ItemStatusFilter = ({ filter, onFilterChange }) => {
@@ -33,8 +33,7 @@ const ItemStatusFilter = ({ filter, onFilterChange }) => {
       {buttons}
     </div>
   );
-
-}
+};
 
 const mapStateToProps = (state) => {
   return {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { onSearchChange } from '../../store/actions';
 
-import './search-panel.css';
+import './SearchPanel.css';
 
 
 const SearchPanel = ({ onSearchChange }) => {

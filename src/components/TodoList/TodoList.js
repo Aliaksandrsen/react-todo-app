@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { deleteItem, onToggleImportant, onToggleDone } from '../../store/actions';
-import TodoListItem from '../todo-list-item';
-import './todo-list.css';
+import TodoListItem from '../TodoListItem';
+import './TodoList.css';
 
 
 const TodoList = ({ todoData, filter, searchText, deleteItem, onToggleImportant, onToggleDone }) => {
@@ -13,7 +13,7 @@ const TodoList = ({ todoData, filter, searchText, deleteItem, onToggleImportant,
       return null;
     });
     return newItems;
-  }
+  };
 
   const filterFunc = (items, filter) => {
     let newItems;
@@ -34,7 +34,7 @@ const TodoList = ({ todoData, filter, searchText, deleteItem, onToggleImportant,
       return newItems;
     }
     return items;
-  }
+  };
 
   let newTodoData = searchFunc(todoData, searchText);
   newTodoData = filterFunc(newTodoData, filter);

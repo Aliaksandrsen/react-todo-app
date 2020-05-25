@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { addItem } from '../../store/actions';
 
-import './item-add-form.css'
+import './ItemAddForm.css';
 
 
 let maxId = 100;
@@ -33,7 +33,7 @@ const ItemAddForm = ({ onAddItem }) => {
       <button className='btn btn-outline-secondary'>Add</button>
     </form>
   )
-}
+};
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -43,4 +43,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(null, mapDispatchToProps)(ItemAddForm);
-
