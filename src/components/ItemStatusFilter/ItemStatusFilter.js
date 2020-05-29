@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { onFilterChange } from '../../store/actions';
 
-import './ItemStatusFilter.css';
+import './ItemStatusFilter.scss';
 
 
 const ItemStatusFilter = ({ filter, onFilterChange }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import './AppHeader.css';
+import './AppHeader.scss';
 
 
 const AppHeader = ({todoData}) => {

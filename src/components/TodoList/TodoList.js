@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { deleteItem, onToggleImportant, onToggleDone } from '../../store/actions';
 import TodoListItem from '../TodoListItem';
-import './TodoList.css';
+import './TodoList.scss';
 
 
 const TodoList = ({ todoData, filter, searchText, deleteItem, onToggleImportant, onToggleDone }) => {

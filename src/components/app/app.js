@@ -6,7 +6,7 @@ import TodoList from '../TodoList';
 import ItemStatusFilter from '../ItemStatusFilter';
 import ItemAddForm from '../ItemAddForm';
 
-import './App.css';
+import './App.scss';
 
 
 const App = () => {

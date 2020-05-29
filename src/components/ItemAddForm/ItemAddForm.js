@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { addItem } from '../../store/actions';
 
-import './ItemAddForm.css';
+import './ItemAddForm.scss';
 
 
 let maxId = 100;
